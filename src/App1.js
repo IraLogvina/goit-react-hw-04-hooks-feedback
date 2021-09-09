@@ -1,48 +1,43 @@
-import { useState } from "react";
+import { Component } from "react";
+
 import Notification from "./components/Notification/Notification";
 import Statistics from "./components/Statistics/Statistics";
 import FeedbackOptions from "./components/FeedbackOptions/FeedbackOptions";
 import Section from "./components/Section/Section";
 
-function App () {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
-
-  const onLeaveFeedback = (feedback) => {
-    switch (feedback) {
-      case "good":
-        setGood((good) => good + 1);
-        break;
-      case "neutral":
-        setNeutral((prevState) => prevState + 1);
-        break;
-      case "bad":
-        setBad((prevState) => prevState + 1);
-        break;
-      default:
-        return;
-    }
+class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
 
-
-const countTotalFeedback = () => {
-  return good + neutral + bad;
+  onLeaveFeedback = (e) => {
+    this.setState((state) => ({ [e.target.name]: state[e.target.name] + 1 }));
   };
 
-const countPositiveFeedbackPercentage = () => {
-    const total = countTotalFeedback();
+  countTotalFeedback = () => {
+    const { good, neutral, bad } = this.state;
+    const total = good + neutral + bad;
+    return total;
+  };
+
+  countPositiveFeedbackPercentage = () => {
+    const { good } = this.state;
+    const total = this.countTotalFeedback();
     return total ? Math.round((good / total) * 100) : 0;
   };
 
-    const total = countTotalFeedback();
-    const percentage = countPositiveFeedbackPercentage();
+  render() {
+    const { good, neutral, bad } = this.state;
+    const total = this.countTotalFeedback();
+    const percentage = this.countPositiveFeedbackPercentage();
     return (
       <div>
         <Section title={"Please leave feedback"}>
           <FeedbackOptions
-            options={["good", "neutral", "bad"]}
-            onLeaveFeedback={onLeaveFeedback}
+            options={Object.keys(this.state)}
+            onLeaveFeedback={this.onLeaveFeedback}
           />
         </Section>
 
@@ -62,5 +57,6 @@ const countPositiveFeedbackPercentage = () => {
       </div>
     );
   }
+}
 
 export default App;
