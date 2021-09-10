@@ -5,25 +5,20 @@ import FeedbackOptions from "./components/FeedbackOptions/FeedbackOptions";
 import Section from "./components/Section/Section";
 
 function App() {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  
+  const [state, setState] = useState({
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  });
 
-  const onLeaveFeedback = (feedback) => {
-    switch (feedback) {
-      case "good":
-        setGood((good) => good + 1);
-        break;
-      case "neutral":
-        setNeutral((neutral) => neutral + 1);
-        break;
-      case "bad":
-        setBad((bad) => bad + 1);
-        break;
-      default:
-        return;
-    }
-  };
+  const { good, neutral, bad } = state;
+
+  const onLeaveFeedback = (e) =>
+    setState({
+      ...state,
+      [e.target.name]: state[e.target.name] + 1,
+    });
 
   const countTotalFeedback = () => {
     return good + neutral + bad;
